@@ -1,5 +1,7 @@
 # Resources (subject to change)
 
+Docs: 
+
 - [Flask](http://flask.pocoo.org/docs/1.0/)
 - [Flask-SQLAlchemy](http://flask-sqlalchemy.pocoo.org/2.3/) Flask wrapper for SQLAlchemy
 - [Flask-Security](https://pythonhosted.org/Flask-Security/) Auth package that integrates other frameworks we'll use
