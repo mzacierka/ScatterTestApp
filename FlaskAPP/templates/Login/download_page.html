@@ -1,0 +1,16 @@
+<!-- Lets render the "layout" template -->
+{% extends 'layout.html' %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/login.css') }}">
+
+<form>
+    <div class="text-center">
+      <h2> Download Patient Data </h2>
+      <a href="{{ url_for('static', filename='images/Test_Data.csv') }}" download>
+      <img src="https://icon-library.net/images/dowload-icon/dowload-icon-6.jpg" height=80px> </a>
+ </form>
+
+  
+  {% endblock %}

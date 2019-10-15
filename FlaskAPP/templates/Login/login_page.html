@@ -1,0 +1,29 @@
+<!-- Lets render the "layout" template -->
+{% extends 'layout.html' %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/login.css') }}">
+
+<form>
+	<div class="text-center">
+	  <img src="https://www.faculty360.com/static/images/login-icon.7c00f1434c5b.svg" height=80px>
+	  <h2>Login</h2>
+	  <hr>
+	</div>
+	<div class="form-group">
+	  <label for="exampleInputEmail1">Email</label>
+	  <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+	</div>
+	<div class="form-group">
+	  <label for="exampleInputPassword1">Password</label>
+	  <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+	</div>
+		<input class="btn btn-primary" type="button" onclick="location.href='search';" value="Submit" />
+		<br>
+		<a href="forget_pw">forgot password?</a>
+
+  </form>
+
+  
+{% endblock %}
