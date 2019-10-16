@@ -1,0 +1,13 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+	font-size: 1.3em;
+}
+
+body {
+	font-family: arial;
+	font-size: 1em;
+}

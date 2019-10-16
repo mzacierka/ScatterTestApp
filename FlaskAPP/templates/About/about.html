@@ -1,0 +1,11 @@
+<!-- Lets render the "layout" template -->
+{% extends 'layout.html' %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/centered.css') }}">
+
+<h1 class="centered">About Page</h1>
+
+
+{% endblock %}

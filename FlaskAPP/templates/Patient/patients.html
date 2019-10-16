@@ -1,0 +1,23 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/search.css') }}">
+
+
+
+<form>
+    <div class="mx-auto col-lg-7 mb-3">
+      <div class="input-group">
+        <input type="text" class="form-control" id="validationDefaultUsername" placeholder="Enter Patient ID" 
+  aria-describedby="append" required>
+        <div class="input-group-prepend">
+
+          <input class="btn btn-primary" type="button" onclick="location.href='download_page';" value="Search"/>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  {% endblock %}
