@@ -5,6 +5,7 @@ FlaskAPP.egg-info
 *.xml
 *.iml
 *.pyc
+.vscode
 
 __pycache__
 /__pycache__
