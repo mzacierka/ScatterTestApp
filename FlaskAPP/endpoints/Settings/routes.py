@@ -8,25 +8,23 @@ settings = Blueprint('settings', __name__)
 
 app = Flask(__name__)
 ALLOWED_EXTENSIONS = set(['json'])
-UPLOAD_FOLDER = 'FlaskAPP/static/json'
+# defines folder for uploads
+UPLOAD_FOLDER = 'FlaskAPP/static/json'          
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-# @login_required
-# @settings.route('/settings')
-# def settings_view():
-#     if current_user.is_authenticated:
-#         return render_template('Settings/settings.html', user=current_user)
-#     else:
-#         return render_template('Login/login.html', form=LoginForm())
 
+# Checks file extension for a match
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+# Currently routes to a 404. Need to build a page for it or redirect to settings.html
+@login_required
 @settings.route('/settings/<filename>')
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'],
                                filename)
-    
+
+# The upload feature. Routes to uploaded_file upon successful completion
 @login_required
 @settings.route('/settings/upload', methods=['GET', 'POST'])
 def upload_file():
@@ -52,6 +50,7 @@ def upload_file():
     else:
         return render_template('Login/login.html', form=LoginForm())
 
+# Displays JSON downloads
 @login_required
 @settings.route('/settings')
 def show_table():
@@ -60,11 +59,12 @@ def show_table():
     else:
         return render_template('Login/login.html', form=LoginForm())
 
+# Creates a list of files in the directory given
 def make_tree(path):
     tree = dict(name=os.path.basename(path), children=[])
     try: lst = os.listdir(path)
     except OSError:
-        pass #ignore errors
+        pass # ignore errors
     else:
         for name in lst:
             fn = os.path.join(path, name)
@@ -73,3 +73,11 @@ def make_tree(path):
             else:
                 tree['children'].append(dict(name=name))
     return tree
+
+# @login_required
+# @settings.route('/settings')
+# def settings_view():
+#     if current_user.is_authenticated:
+#         return render_template('Settings/settings.html', user=current_user)
+#     else:
+#         return render_template('Login/login.html', form=LoginForm())

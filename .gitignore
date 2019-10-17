@@ -12,3 +12,4 @@ __pycache__
 
 /tests
 /.pytest_cache
+mysqlclient-1.4.4-cp37-cp37m-win32.whl
