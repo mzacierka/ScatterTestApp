@@ -10,13 +10,12 @@ from sqlalchemy.orm import sessionmaker
 from FlaskAPP.models.jsonfiles import JSONFiles
 from FlaskAPP import db
 from io import BytesIO
+
+
 settings = Blueprint('settings', __name__)
 app = Flask(__name__)
-ALLOWED_EXTENSIONS = set(['json'])
-# defines folder for uploads
-UPLOAD_FOLDER = 'FlaskAPP/static/json'          
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+# The upload feature. Routes to uploaded_file upon successful completion
 @login_required
 @settings.route('/settings/upload')
 def show():
@@ -25,7 +24,7 @@ def show():
     else:
         return render_template('Login/login.html', form=LoginForm())
 
-# The upload feature. Routes to uploaded_file upon successful completion
+# Landing page upon successful upload, needs to be changed
 @login_required
 @settings.route('/settings/upload/uploadFile', methods=['POST'])
 def upload_file():
@@ -37,9 +36,11 @@ def upload_file():
     db.session.add(newFile)
     db.session.commit()
 
-    return '<p>Saved ' + file.filename + ' to the database! <a href="/settings"> Return to settings </a>'
+    if current_user.is_authenticated:
+        return render_template('Settings/settings.html', user=current_user, file_data = JSONFiles.query.order_by(JSONFiles.name).all())
+    else:
+        return render_template('Login/login.html', form=LoginForm())
     
-
 # Displays JSON downloads
 @login_required
 @settings.route('/settings')
@@ -49,16 +50,9 @@ def show_table():
     else:
         return render_template('Login/login.html', form=LoginForm())
 
+# Download link for JSON files
 @login_required
 @settings.route('/settings/download/<filename>')
 def download(filename):
     file_data = JSONFiles.query.filter_by(name=filename).first()
     return send_file(BytesIO(file_data.data), attachment_filename=filename, as_attachment=True)
-
-# @login_required
-# @settings.route('/settings')
-# def settings_view():
-#     if current_user.is_authenticated:
-#         return render_template('Settings/settings.html', user=current_user)
-#     else:
-#         return render_template('Login/login.html', form=LoginForm())
