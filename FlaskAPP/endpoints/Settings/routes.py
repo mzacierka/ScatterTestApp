@@ -1,78 +1,59 @@
 import os
-from flask import Flask, Blueprint, send_from_directory, render_template, redirect, url_for, flash, request
+from flask import Flask, Blueprint, send_from_directory, render_template, redirect, url_for, flash, request, send_file
 from werkzeug.utils import secure_filename
 from flask_login import login_required, current_user
 from FlaskAPP.config import Config
 from FlaskAPP.endpoints.Login.forms import LoginForm
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from FlaskAPP.models.jsonfiles import JSONFiles
+from FlaskAPP import db
+from io import BytesIO
 settings = Blueprint('settings', __name__)
-
 app = Flask(__name__)
 ALLOWED_EXTENSIONS = set(['json'])
 # defines folder for uploads
 UPLOAD_FOLDER = 'FlaskAPP/static/json'          
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# Checks file extension for a match
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-# Currently routes to a 404. Need to build a page for it or redirect to settings.html
 @login_required
-@settings.route('/settings/<filename>')
-def uploaded_file(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'],
-                               filename)
-
-# The upload feature. Routes to uploaded_file upon successful completion
-@login_required
-@settings.route('/settings/upload', methods=['GET', 'POST'])
-def upload_file():
-    
-    if request.method == 'POST':
-        # check if the post request has the file part
-        if 'file' not in request.files:
-            flash('No file part')
-            return redirect(request.url)
-        file = request.files['file']
-        # if user does not select file, browser also
-        # submit an empty part without filename
-        if file.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('settings.uploaded_file',
-                                    filename=filename))
+@settings.route('/settings/upload')
+def show():
     if current_user.is_authenticated:
         return render_template('Settings/fileUpload.html', user=current_user)
     else:
         return render_template('Login/login.html', form=LoginForm())
+
+# The upload feature. Routes to uploaded_file upon successful completion
+@login_required
+@settings.route('/settings/upload/uploadFile', methods=['POST'])
+def upload_file():
+
+    file = request.files['file']
+
+    db.session.rollback()
+    newFile = JSONFiles(name=file.filename, data=file.read())
+    db.session.add(newFile)
+    db.session.commit()
+
+    return '<p>Saved ' + file.filename + ' to the database! <a href="/settings"> Return to settings </a>'
+    
 
 # Displays JSON downloads
 @login_required
 @settings.route('/settings')
 def show_table():
     if current_user.is_authenticated:
-        return render_template('Settings/settings.html', user=current_user, tree=make_tree("FlaskAPP/static/json"))
+        return render_template('Settings/settings.html', user=current_user, file_data = JSONFiles.query.order_by(JSONFiles.name).all())
     else:
         return render_template('Login/login.html', form=LoginForm())
 
-# Creates a list of files in the directory given
-def make_tree(path):
-    tree = dict(name=os.path.basename(path), children=[])
-    try: lst = os.listdir(path)
-    except OSError:
-        pass # ignore errors
-    else:
-        for name in lst:
-            fn = os.path.join(path, name)
-            if os.path.isdir(fn):
-                tree['children'].append(make_tree(fn))
-            else:
-                tree['children'].append(dict(name=name))
-    return tree
+@login_required
+@settings.route('/settings/download/<filename>')
+def download(filename):
+    file_data = JSONFiles.query.filter_by(name=filename).first()
+    return send_file(BytesIO(file_data.data), attachment_filename=filename, as_attachment=True)
 
 # @login_required
 # @settings.route('/settings')

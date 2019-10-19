@@ -6,9 +6,6 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='styles/centered.css') }}">
   <div class="centered">
     
-    <h1>Download Tests</h1>
-
-    <!--Table displays each file in tree (refer to make_tree(path) in endpoints/Settings/routes.py)-->
     <table class="table table-secondary">
       <thead>
         <tr>
@@ -17,10 +14,10 @@
         </tr>
       </thead>
       <tbody>
-        {% for item in tree.children %}
+        {% for item in file_data %}
         <tr>
           <td>{{item.name}}</td>
-          <td><a href="../../static/json/{{item.name}}" download>Download</a></td>
+          <td><a href="/settings/download/{{item.name}}" download>Download</a></td>
         </tr>
         {% endfor %}
       </tbody>

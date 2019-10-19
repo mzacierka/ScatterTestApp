@@ -6,6 +6,7 @@ FlaskAPP.egg-info
 *.iml
 *.pyc
 .vscode
+.pylintrc
 
 __pycache__
 /__pycache__

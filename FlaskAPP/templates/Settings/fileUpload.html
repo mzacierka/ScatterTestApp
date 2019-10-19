@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='styles/centered.css') }}">
   <div class="centered">
     <h1>Upload new File</h1>
-    <form method=post enctype=multipart/form-data>
+    <form method=post enctype=multipart/form-data action="/settings/upload/uploadFile">
       <input type=file name=file>
       <input type=submit value=Upload>
     </form>
