@@ -1,5 +1,5 @@
 import os
-from flask import Flask, Blueprint, render_template, redirect, url_for, flash, request, send_file
+from flask import Blueprint, render_template, redirect, flash, request, send_file
 from werkzeug.utils import secure_filename
 from flask_login import login_required, current_user
 from FlaskAPP.config import Config
@@ -10,10 +10,9 @@ from FlaskAPP import db
 from io import BytesIO
 
 settings = Blueprint('settings', __name__)
-app = Flask(__name__)
 ALLOWED_EXTENSIONS = {'json'}
 
-# The upload feature. Routes to uploaded_file upon successful completion
+# The upload feature. Routes back to /settings upon successful completion
 @login_required
 @settings.route('/settings/upload')
 def show():
@@ -26,7 +25,7 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# Landing page upon successful upload
+# Checks file given for correct extension / bad file, uploads to database
 @login_required
 @settings.route('/settings/upload/uploadFile', methods=['POST'])
 def upload_file():
@@ -37,9 +36,14 @@ def upload_file():
             flash('No file part')
             return redirect('/settings')
         file = request.files['file']
-        # check if file exists
+        # check if file is given
         if file.filename == '':
             flash('No selected file')
+            return redirect('/settings')
+        # check if file exists in database
+        missing = JSONFiles.query.filter_by(name=file.filename).first()
+        if missing is not None:
+            flash('Filename already exists')
             return redirect('/settings')
         # check if file is an allowed extension
         if file and allowed_file(file.filename):
@@ -62,7 +66,7 @@ def upload_file():
 @settings.route('/settings')
 def settings_view():
     if current_user.is_authenticated:
-        return render_template('Settings/settings.html', user=current_user, file_data = JSONFiles.query.order_by(JSONFiles.name).all())
+        return render_template('Settings/settings.html', user=current_user, file_data=JSONFiles.query.order_by(JSONFiles.name).all())
     else:
         return render_template('Login/login.html', form=LoginForm())
 
