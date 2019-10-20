@@ -9,7 +9,6 @@ from FlaskAPP.models.jsonfiles import JSONFiles
 from FlaskAPP import db
 from io import BytesIO
 
-
 settings = Blueprint('settings', __name__)
 app = Flask(__name__)
 ALLOWED_EXTENSIONS = {'json'}
@@ -27,7 +26,7 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# Landing page upon successful upload, needs to be changed
+# Landing page upon successful upload
 @login_required
 @settings.route('/settings/upload/uploadFile', methods=['POST'])
 def upload_file():
@@ -58,12 +57,10 @@ def upload_file():
         flash('File not correct extension')
         return redirect('/settings')
 
-    
-    
 # Displays JSON downloads
 @login_required
 @settings.route('/settings')
-def show_table():
+def settings_view():
     if current_user.is_authenticated:
         return render_template('Settings/settings.html', user=current_user, file_data = JSONFiles.query.order_by(JSONFiles.name).all())
     else:
