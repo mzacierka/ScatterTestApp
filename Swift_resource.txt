@@ -1,4 +1,0 @@
-The below sources for swift resources
-(1) https://developer.apple.com/library/archive/featuredarticles/ViewControllerPGforiPhoneOS/UsingSegues.html
-(2) https://docs.swift.org/swift-book/GuidedTour/GuidedTour.html
-(3)https://www.tutorialspoint.com/swift/index.htm

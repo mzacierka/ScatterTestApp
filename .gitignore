@@ -1,6 +1,5 @@
 flaskenv
 venv
-FlaskAPP/config.py
 FlaskAPP.egg-info
 *.xml
 *.iml
