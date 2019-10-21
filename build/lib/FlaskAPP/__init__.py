@@ -22,13 +22,11 @@ def create_app(config_class=Config):
     from FlaskAPP.endpoints.Patient.routes import patients
     from FlaskAPP.endpoints.About.routes import about
     from FlaskAPP.endpoints.Login.routes import login
-    from FlaskAPP.endpoints.Data.routes import data
 
     app.register_blueprint(main)
     app.register_blueprint(settings)
     app.register_blueprint(patients)
     app.register_blueprint(about)
     app.register_blueprint(login)
-    app.register_blueprint(data)
 
     return app
