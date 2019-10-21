@@ -8,9 +8,14 @@ FlaskAPP.egg-info
 .vscode
 .pylintrc
 
+build
+/build
+dist
+/dist
+
 __pycache__
 /__pycache__
 
 /tests
 /.pytest_cache
-mysqlclient-1.4.4-cp37-cp37m-win32.whl
+
