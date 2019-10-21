@@ -4,7 +4,27 @@
 {% block content %}
 
 <link rel="stylesheet" href="{{ url_for('static', filename='styles/centered.css') }}">
-
-<h1 class="centered">Settings View</h1>
+  <div class="centered">
+    
+    <table class="table table-secondary">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">Test Name</th>
+          <th scope="col">Download Link</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in file_data %}
+        <tr>
+          <td>{{item.name}}</td>
+          <td><a href="/settings/download/{{item.name}}" download>Download</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    
+    <a class="btn btn-dark" href="/settings/upload">Upload</a>
+    
+</div>
 
 {% endblock %}

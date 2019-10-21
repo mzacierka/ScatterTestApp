@@ -5,13 +5,17 @@ FlaskAPP.egg-info
 *.xml
 *.iml
 *.pyc
+.vscode
+.pylintrc
+
+build
+/build
+dist
+/dist
 
 __pycache__
 /__pycache__
 
 /tests
 /.pytest_cache
-build
-/build
-dist
-/dist
+
