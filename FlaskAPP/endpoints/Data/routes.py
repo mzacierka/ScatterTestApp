@@ -1,12 +1,11 @@
-from flask import Blueprint, render_template, redirect, url_for
+from flask import Blueprint, render_template, redirect, url_for, request
+import os
+
 data = Blueprint('data', __name__)
 
-@data.route("/upload_patient_test_data", methods=['POST'])
+@data.route("/data/upload_patient_test_data", methods=['POST'])
 def upload_patient_test_data():
-    try:
-        testData = request.get_json() if request.is_json else None
-    except Exception:
-        raise ApiSysExceptions.invalid_json
+    testData = request.get_json(force=True)
     print(testData)
 
 @data.route("/download_test_info", methods=['POST'])
