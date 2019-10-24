@@ -10,7 +10,7 @@ patients = Blueprint('patients', __name__)
 def index_view():
     if current_user.is_authenticated:
         return render_template('Patient/patients.html', user=current_user,
-                               tableData=Testframe.query.filter_by(DoctorID=current_user.DoctorID).first())
+                               tableData=Testframe.query.filter_by(DoctorID=current_user.DoctorID).all())
     else:
         return render_template('Login/login.html', form=LoginForm())
 
