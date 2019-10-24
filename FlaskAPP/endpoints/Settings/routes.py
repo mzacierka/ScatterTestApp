@@ -1,13 +1,14 @@
 import os
+from io import BytesIO
+from FlaskAPP.models.jsonfiles import JSONFiles
 from flask import Blueprint, render_template, redirect, flash, request, send_file
 from werkzeug.utils import secure_filename
 from flask_login import login_required, current_user
 from FlaskAPP.config import Config
 from FlaskAPP.endpoints.Login.forms import LoginForm
 from flask_sqlalchemy import SQLAlchemy
-from FlaskAPP.models.jsonfiles import JSONFiles
 from FlaskAPP import db
-from io import BytesIO
+
 
 settings = Blueprint('settings', __name__)
 ALLOWED_EXTENSIONS = {'json'}
