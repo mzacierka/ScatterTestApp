@@ -1,23 +1,48 @@
+<!-- Lets render the "layout" template -->
 {% extends 'layout.html' %}
 
 {% block content %}
 
+<script type="text/javascript" src="{{ url_for('static', filename='javascript/table.js') }}"></script>
 
-<link rel="stylesheet" href="{{ url_for('static', filename='styles/search.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/datatable.css') }}">
 
+<div class="table">
+    <table class="display" id="example">
+        <thead>
+            <tr>
+                <th>PatientID</th>
+                <th>Date Taken</th>
+                <th>Test Data</th>
+                <th>Questionaire</th>
+            </tr>
+        </thead>
+    
+        <tbody>
+        {% for item in tableData %}
+            <tr>
+                <td>{{ item['PatientID'] }}</td>
+                <td>{{ item['DateTaken'] }}</td>
+                <td>            
+                    <a href="{{ url_for('static', filename='images/Test_Data.csv') }}" download> Download </a>
+                </td>
+                <td>            
+                    <a href="{{ url_for('static', filename='images/Test_Data.csv') }}" download> Download </a>
+                </td>
+            </tr>
+        {% endfor %}
+            <tr>
+                <td>MZ1015</td>
+                <td>10-15-2019</td>
+                <td>            
+                    <a href="{{ url_for('static', filename='images/Test_Data.csv') }}" download> Download </a>
+                </td>
+                <td>            
+                    <a href="{{ url_for('static', filename='images/Test_Data.csv') }}" download> Download </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 
-
-<form>
-    <div class="mx-auto col-lg-7 mb-3">
-      <div class="input-group">
-        <input type="text" class="form-control" id="validationDefaultUsername" placeholder="Enter Patient ID" 
-  aria-describedby="append" required>
-        <div class="input-group-prepend">
-
-          <input class="btn btn-primary" type="button" onclick="location.href='download_page';" value="Search"/>
-        </div>
-      </div>
-    </div>
-  </form>
-
-  {% endblock %}
+{% endblock %}
