@@ -8,5 +8,5 @@ class Testframe(db.Model):
     DateTaken = db.Column(db.DateTime)
     DoctorID = db.Column(db.Integer, primary_key=True)
     TestName = db.Column(db.String(50))
-    TestLength = db.Column(db.Float)
+    TestLength = db.Column(db.DateTime)
 

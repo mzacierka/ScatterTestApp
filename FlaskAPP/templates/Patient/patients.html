@@ -19,17 +19,18 @@
         </thead>
     
         <tbody>
+        {% for item in tableData %}
             <tr>
-                <td>TL1016</td>
-                <td>10-16-2019</td>
+                <td>{{ item['PatientID'] }}</td>
+                <td>{{ item['DateTaken'] }}</td>
                 <td>            
                     <a href="{{ url_for('static', filename='images/Test_Data.csv') }}" download> Download </a>
                 </td>
                 <td>            
                     <a href="{{ url_for('static', filename='images/Test_Data.csv') }}" download> Download </a>
                 </td>
-    
             </tr>
+        {% endfor %}
             <tr>
                 <td>MZ1015</td>
                 <td>10-15-2019</td>
