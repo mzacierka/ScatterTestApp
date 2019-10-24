@@ -1,13 +1,11 @@
-from flask import Blueprint, Response, render_template, redirect, url_for, request, jsonify, send_file
-from FlaskAPP.models.Questions import Questions
-from FlaskAPP.models.jsonfiles import JSONFiles
-from flask_marshmallow import Marshmallow
-from sqlalchemy.sql.expression import func, select
-from FlaskAPP import ma
-import os
-import json
-import requests
 from io import BytesIO
+import json
+from FlaskAPP import ma
+from sqlalchemy.sql.expression import func
+from flask import Blueprint, Response, render_template, redirect, url_for, request, jsonify, send_file
+from FlaskAPP.models.questions import Questions
+from FlaskAPP.models.jsonfiles import JSONFiles
+
 
 class QuestionSchema(ma.ModelSchema):
     class Meta:
@@ -19,14 +17,17 @@ class JSONFileSchema(ma.ModelSchema):
 
 data = Blueprint('data', __name__)
 
-@data.route("/data/upload_patient_test_data", methods=['POST'])
+@data.route("/data/upload_patient_test_data", methods=['POST', 'GET'])
 def upload_patient_test_data():
-    try:
-        testData = request.get_json() if request.is_json else None
-    except Exception:
-        raise ApiSysExceptions.invalid_json
-    for x in testData:
-        print(x)
+    # try:
+    #     testData = request.get_json("FlaskAPP\static\json\sample.json") if request.is_json else None
+    # except Exception:
+    #     raise ApiSysExceptions.invalid_json
+    # for x in testData:
+    #     print(x)
+    
+    # with open ('FlaskAPP\static\json\sample.json') as json_file:
+    #     json.load(json_file)
     
     print("This should work")
     return "Great job!"
@@ -64,7 +65,7 @@ def upload_patient_questionnaire_answers():
 @data.route("/data/download_questions", methods=['POST', 'GET'])
 def download_questions():
 
-    questions = Questions.query.order_by(func.random(Questions.QuestionID)).limit(5)
+    questions = Questions.query.order_by(func.rand()).limit(5)
     question_schema = QuestionSchema(many=True)
     output = question_schema.dump(questions)
     return jsonify(output)
