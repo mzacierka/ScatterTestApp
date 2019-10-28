@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, request
 from flask_login import login_user, logout_user, login_required, current_user
 
-from FlaskAPP.models.users import Mocklogin
+from FlaskAPP.models.users import Doctor
 from FlaskAPP.endpoints.Login.forms import LoginForm
 
 
@@ -19,9 +19,9 @@ def login_view():
         password = form.password.data
 
         # Query for a user with the provided username
-        result = Mocklogin.query.filter_by(email=email).first()
+        result = Doctor.query.filter_by(email=email).first()
 
-        if result is not None and password == result.password:
+        if result is not None and password == result.password_:
             # Login user
             login_user(result)
             return render_template('index.html', user=result)

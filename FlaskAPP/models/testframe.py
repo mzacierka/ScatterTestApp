@@ -8,3 +8,4 @@ class TestFrame(db.Model):
     DateTaken = db.Column(db.DateTime)
     TestName = db.Column(db.String(50), db.ForeignKey('json_files.name'))
     TestLength = db.Column(db.Time)
+
