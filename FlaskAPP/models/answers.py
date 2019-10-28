@@ -5,4 +5,4 @@ class Answers(db.Model):
         primary_key=True)
     QuestionID = db.Column(db.Integer, db.ForeignKey('questions.QuestionID'),
         primary_key=True)
-    Answer = db.Column(db.Strng(250))
+    Answer = db.Column(db.String(250))

@@ -12,6 +12,7 @@ setup(
         'flask-security',
         'mysqlclient',
         'wtforms',
-        'requests'
+        'requests',
+        'XlsxWriter'
     ]
 )
