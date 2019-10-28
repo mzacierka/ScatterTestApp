@@ -10,7 +10,7 @@ setup(
         'marshmallow-sqlalchemy',
         'flask-sqlalchemy',
         'flask-security',
-        'mysqlclient',
+        'PyMySQL',
         'wtforms',
         'requests',
         'XlsxWriter'
