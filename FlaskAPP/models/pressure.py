@@ -5,7 +5,7 @@ class Pressure(db.Model):
         primary_key=True)
     CircleID = db.Column(db.Integer, db.ForeignKey('circles.CircleID'), 
         primary_key=True)
-    Xcoord = db.Column(db.Double)
-    Ycoord = db.Column(db.Double)
-    Pressure = db.Column(db.Double)
+    Xcoord = db.Column(db.Float)
+    Ycoord = db.Column(db.Float)
+    Pressure = db.Column(db.Float)
     

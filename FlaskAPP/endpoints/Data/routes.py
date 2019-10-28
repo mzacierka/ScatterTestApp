@@ -5,6 +5,12 @@ from sqlalchemy.sql.expression import func
 from flask import Blueprint, Response, render_template, redirect, url_for, request, jsonify, send_file
 from FlaskAPP.models.questions import Questions
 from FlaskAPP.models.jsonfiles import JSONFiles
+from FlaskAPP.models.circles import Circles
+from FlaskAPP.models.answers import Answers
+from FlaskAPP.models.pressure import Pressure
+from FlaskAPP.models.testframe import TestFrame
+import flask_marshmallow
+import xlsxwriter
 
 
 class QuestionSchema(ma.ModelSchema):
@@ -26,9 +32,13 @@ def upload_patient_test_data():
     # for x in testData:
     #     print(x)
     
-    # with open ('FlaskAPP\static\json\sample.json') as json_file:
-    #     json.load(json_file)
     
+    file = open("FlaskAPP/static/json/sample.json")
+    jsonfile = json.dumps(file.read())
+
+    # for item in jsonfile
+    #     print(item[0])
+
     print("This should work")
     return "Great job!"
 
@@ -39,9 +49,10 @@ def download_test(filename):
 
 @data.route('/data/download/getTestList')
 def getList():
-    fileList = JSONFiles.query.order_by(JSONFiles.name).all()
+    fileList = JSONFiles.query.all()
     file_schema = JSONFileSchema(many=True)
     output = file_schema.dump(fileList)
+    
     return jsonify(output)
 
 @data.route("/data/download_test_info", methods=['POST', 'GET'])
@@ -76,3 +87,22 @@ def download_questions():
 #     QuestionID=questions[0].QuestionID)
 #     #add code that will grab the data stored in the database and push it to the app
 #     '''
+
+@data.route('/data/get_excel')
+def get_excel():
+
+    
+    
+    workbook = xlsxwriter.Workbook('hello.xlsx')
+    formula = workbook.add_worksheet()
+    raw = workbook.add_worksheet()
+    final = workbook.add_worksheet()
+    
+    
+    formula.write('A1', 'Hello world')
+    raw.write('A2', )
+
+    workbook.close()
+
+    return "Hi"
+    
