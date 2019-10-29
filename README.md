@@ -15,6 +15,49 @@ Tom Lentz: https://github.com/tlentz98/Senior-Project
 
 Hiral Shah: https://github.com/hiralshah5172/senior_project
 
+#### The basic necessities to run it
+
+## Install [Python](https://www.python.org/), [pip](https://pip.pypa.io/en/stable/installing/), and [Virtualenv](https://virtualenv.pypa.io/en/latest/)
+###### Once they're downloaded verify installation:
+```
+python --version
+Python 3.7.2
+
+pip --version
+pip 19.3.1
+
+virtualenv --version
+16.7.5
+```
+## Get Environment Started
+Create virtual environment
+```
+virtualenv venv
+```
+
+Wait for it to complete then start the environment. Afterwards, install required packages
+```
+.\venv\Scripts\activate
+pip install -e .
+```
+
+Set the environment variables so flask knows what to run
+```
+# For Powershell users
+$env:FLASK_APP="FlaskAPP"
+$env:FLASK_ENV="development"
+
+# For cmd shell users
+set FLASK_APP=FlaskAPP
+set FLASK_ENV=developement
+```
+
+Create a config file using the config_example.py file located in FlaskAPP and set the values
+Then run the flask app!
+```
+flask run
+```
+
 Copyright 2019 
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software 
