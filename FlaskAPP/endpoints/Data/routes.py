@@ -137,18 +137,10 @@ def upload_patient_questionnaire_answers():
 
     return "Answers"
 
-@data.route("/data/download_test_info", methods=['POST', 'GET'])
-def download_test_info():
-    # pull from database
-    # downloadFile = TestData.query.filter_by("DoctorID").all()
-    return "Great job!"
-    # add code that will grab the json stored in the database and push it to the app
-
 @data.route('/data/download/<filename>')
 def download_test(filename):
     file_data = JSONFiles.query.filter_by(name=filename).first()
     return send_file(BytesIO(file_data.data), attachment_filename=filename, as_attachment=True)
-
 
 @data.route('/data/download/getTestList')
 def getList():
@@ -158,7 +150,6 @@ def getList():
     
     return jsonify(output)
 # make sure to perform error checking - this endpoint is open to anyone
-
 
 @data.route("/data/download_questions", methods=['POST', 'GET'])
 def download_questions():
