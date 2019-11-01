@@ -1,6 +1,6 @@
 ECHO Activating virtual environment
 
-venv/Scripts/activate.bat
+venv\Scripts\activate.bat
 
 set FLASK_APP=FlaskAPP
 
