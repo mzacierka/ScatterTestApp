@@ -26,10 +26,10 @@
                 <td>{{ item['PatientID'] }}</td>
                 <td>{{ item['DateTaken'] }}</td>
                 <td>            
-                    <a href="{{ url_for('static', filename='images/Test_Data.csv') }}" download> Download </a>
+                    <a href="/data/get_excel?id={{ item['TestID'] }}&selection=1">Download</a>
                 </td>
                 <td>            
-                    <a href="{{ url_for('static', filename='images/Test_Data.csv') }}" download> Download </a>
+                    <a href="/data/get_excel?id={{ item['TestID'] }}&selection=2"> Download </a>
                 </td>
             </tr>
         {% endfor %}
