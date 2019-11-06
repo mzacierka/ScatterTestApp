@@ -17,6 +17,7 @@ import flask_marshmallow
 import xlsxwriter
 import datetime, time
 
+app = Flask(__name__)
 
 class QuestionSchema(ma.ModelSchema):
     class Meta:
@@ -144,11 +145,28 @@ def upload_patient_questionnaire_answers():
     return "Answers"
 
 
-@data.route('/data/download/<filename>')
-def download_test(filename):
-    file_data = JSONFiles.query.filter_by(name=filename).first()
-    return send_file(BytesIO(file_data.data), attachment_filename=filename, as_attachment=True)
+# @data.route('/data/download/<filename>')
+# def download_test(filename):
+#     file_data = JSONFiles.query.filter_by(name=filename).first()
+#     file_schema = JSONFileSchema()
+#     output = file_schema.dump(file_data)
+    
+#     return jsonify(output)
 
+@data.route('/data/download/<filename>')
+def download(filename):
+    file_data = JSONFiles.query.filter_by(name=filename).first()
+    jsonfile = file_data.data
+
+    string = jsonfile.decode("utf8").replace("'", '"')
+
+    response = app.response_class(
+        response=str(string),
+        status=200,
+        mimetype='application/json'
+    )
+
+    return response
 
 @data.route('/data/download/getTestList')
 def getList():
