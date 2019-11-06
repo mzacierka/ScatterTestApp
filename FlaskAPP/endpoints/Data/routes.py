@@ -33,7 +33,7 @@ data = Blueprint('data', __name__)
 
 # Divdies to get milliseconds, then subtracts from the start time to get interval
 def convert(nano, testStartTime):
-    return (((nano / 100000) - (testStartTime / 100000))
+    return (((nano / 100000) - (testStartTime / 100000)))
 
 
 @data.route("/data/upload_patient_test_data", methods=['POST'])
