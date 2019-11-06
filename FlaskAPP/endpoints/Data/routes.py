@@ -1,7 +1,9 @@
+import os
 from io import BytesIO
+from FlaskAPP.config import Config
 import json
 from FlaskAPP import ma, db
-from sqlalchemy import desc
+from sqlalchemy import desc, asc
 from sqlalchemy.sql.expression import func
 from flask import Flask, Blueprint, Response, render_template, redirect, url_for, request, jsonify, send_file
 from FlaskAPP.models.questions import Questions
@@ -15,6 +17,7 @@ import flask_marshmallow
 import xlsxwriter
 import datetime, time
 
+
 class QuestionSchema(ma.ModelSchema):
     class Meta:
         model = Questions
@@ -27,9 +30,11 @@ class JSONFileSchema(ma.ModelSchema):
 
 data = Blueprint('data', __name__)
 
+
 # Divdies to get milliseconds, then subtracts from the start time to get interval
 def convert(nano, testStartTime):
     return (nano - testStartTime) / 100000
+
 
 @data.route("/data/upload_patient_test_data", methods=['POST'])
 def upload_patient_test_data():
@@ -112,6 +117,7 @@ def upload_patient_test_data():
 
     return "Nice!"
 
+
 @data.route("/data/upload_patient_questionnaire_answers", methods=['POST'])
 def upload_patient_questionnaire_answers():
     try:
@@ -137,10 +143,12 @@ def upload_patient_questionnaire_answers():
 
     return "Answers"
 
+
 @data.route('/data/download/<filename>')
 def download_test(filename):
     file_data = JSONFiles.query.filter_by(name=filename).first()
     return send_file(BytesIO(file_data.data), attachment_filename=filename, as_attachment=True)
+
 
 @data.route('/data/download/getTestList')
 def getList():
@@ -150,6 +158,7 @@ def getList():
     
     return jsonify(output)
 # make sure to perform error checking - this endpoint is open to anyone
+
 
 @data.route("/data/download_questions", methods=['POST', 'GET'])
 def download_questions():
@@ -166,19 +175,98 @@ def download_questions():
 #     #add code that will grab the data stored in the database and push it to the app
 #     '''
 
-@data.route('/data/get_excel')
+
+#  ENDPOINT
+#  returns corresponding .xlsx file based on get request header
+#  <TestID> := ID of the test selected
+#  <selection> := Either Data or Questionnaire
+#  ***Will need to implement a garbage collector for /file-downloads folder after X (hours/day)***
+
+
+@data.route('/data/get_excel', methods=['GET'])
 def get_excel():
+    test_id = request.args.get('id', None)
+    selection = request.args.get('selection', None)
+    testinfo = TestFrame.query.filter_by(TestID=test_id).first()  # get test info
 
-    workbook = xlsxwriter.Workbook('hello.xlsx')
-    formula = workbook.add_worksheet()
-    raw = workbook.add_worksheet()
-    final = workbook.add_worksheet()
-    
-    
-    formula.write('A1', 'Hello world')
-    raw.write('A2', )
+    row = 1
+    col = 0
 
-    workbook.close()
+    if selection == '1':  # User requested download for DATA
+        dir_path = Config.APP_ROOT + '/file-downloads/'
+        filename = "{id}_testdata.xlsx".format(id=testinfo.PatientID)
+        if os.path.isfile(dir_path + filename):  # check to see if file already exists
+            return send_file(dir_path + filename, as_attachment=True)
 
-    return "Hi"
-    
+        workbook = xlsxwriter.Workbook(dir_path + filename)  # Create xlsx file
+        formula = workbook.add_worksheet()
+        raw = workbook.add_worksheet()
+        final = workbook.add_worksheet()
+
+        # Header
+        raw.write(0, 0, 'CircleID')
+        raw.write(0, 1, 'symbol')
+        raw.write(0, 2, 'begin_circle')
+        raw.write(0, 3, 'end_circle')
+        raw.write(0, 4, 'total_time')
+        raw.write(0, 5, 'CircleID')
+        raw.write(0, 6, 'PressureID')
+        raw.write(0, 7, 'Pressure')
+        raw.write(3, 10, 'PatientID:')
+        raw.write(4, 10, testinfo.PatientID)
+
+        # Grab all points from table
+        circles = db.engine.execute("SELECT * FROM test.circles WHERE TestID='{id}';".format(id=test_id))
+        pressure = Pressure.query.filter_by(TestID=test_id).all()  # get pressure from test
+        for item in circles:  # loop circles 5 columns
+            raw.write(row, col, item.CircleID)
+            raw.write(row, col + 1, item.symbol)
+            raw.write(row, col + 2, item.begin_circle)
+            raw.write(row, col + 3, item.end_circle)
+            raw.write(row, col + 4, item.total_time)
+            row = row + 1
+
+        row = 1
+        col = 5
+        for item in pressure:  # loop pressure 3 columns
+            raw.write(row, col, item.CircleID)
+            raw.write(row, col + 1, item.PressureID)
+            raw.write(row, col + 2, item.Pressure)
+            row = row + 1
+
+        workbook.close()
+        return send_file(dir_path + filename, as_attachment=True)  # send file as attachment
+    elif selection == '2':
+        dir_path = Config.APP_ROOT + '/file-downloads/'
+        filename = "{id}_questionnaire.xlsx".format(id=testinfo.PatientID)
+        if os.path.isfile(dir_path + filename):
+            return send_file(dir_path + filename, as_attachment=True)  # send file as attachment
+
+        excel = xlsxwriter.Workbook(dir_path + filename)
+        question = excel.add_worksheet()
+        question.write(0, 0, 'QuestionID')
+        question.write(0, 1, 'QuestionType')
+        question.write(0, 2, 'PossibleAnswers')
+        question.write(0, 3, 'Question')
+        question.write(0, 4, 'Answer')
+        questions = Questions.query.order_by(asc(Questions.QuestionID)).all()
+        answers = Answers.query.filter_by(TestID=test_id).order_by(asc(Answers.QuestionID)).all()
+
+        for item in questions:  # loop questions 3 columns
+            question.write(row, col + 1, item.QuestionID)
+            question.write(row, col + 2, item.QuestionType)
+            question.write(row, col + 3, item.PossibleAnswers)
+            question.write(row, col + 4, item.Question)
+            row = row + 1
+
+        row = 1
+        col = 5
+        for item in answers:  # loop answers 5 columns
+            question.write(row, col, item.Answer)
+            # questions.write(row, col + 1, item['Answer'])
+            row = row + 1
+
+        excel.close()
+        return send_file(dir_path + filename, as_attachment=True)  # send file as attachment
+
+
