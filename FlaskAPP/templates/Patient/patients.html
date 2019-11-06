@@ -11,6 +11,7 @@
     <table class="display" id="example">
         <thead>
             <tr>
+                <th>TestID</th>
                 <th>PatientID</th>
                 <th>Date Taken</th>
                 <th>Test Data</th>
@@ -21,26 +22,17 @@
         <tbody>
         {% for item in tableData %}
             <tr>
+                <td>{{ item['TestID'] }}</td>
                 <td>{{ item['PatientID'] }}</td>
                 <td>{{ item['DateTaken'] }}</td>
                 <td>            
-                    <a href="{{ url_for('static', filename='images/Test_Data.csv') }}" download> Download </a>
+                    <a href="/data/get_excel?id={{ item['TestID'] }}&selection=1">Download</a>
                 </td>
                 <td>            
-                    <a href="{{ url_for('static', filename='images/Test_Data.csv') }}" download> Download </a>
+                    <a href="/data/get_excel?id={{ item['TestID'] }}&selection=2"> Download </a>
                 </td>
             </tr>
         {% endfor %}
-            <tr>
-                <td>MZ1015</td>
-                <td>10-15-2019</td>
-                <td>            
-                    <a href="{{ url_for('static', filename='images/Test_Data.csv') }}" download> Download </a>
-                </td>
-                <td>            
-                    <a href="{{ url_for('static', filename='images/Test_Data.csv') }}" download> Download </a>
-                </td>
-            </tr>
         </tbody>
     </table>
 </div>

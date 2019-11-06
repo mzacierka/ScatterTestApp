@@ -1,12 +1,18 @@
 flaskenv
-venv
+FlaskAPP/file-downloads/*.xlsx
 FlaskAPP/config.py
+
+
+venv
 FlaskAPP.egg-info
 *.xml
 *.iml
 *.pyc
 .vscode
 .pylintrc
+
+
+
 
 build
 /build
