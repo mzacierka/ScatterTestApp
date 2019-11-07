@@ -19,7 +19,6 @@ import xlsxwriter
 import datetime, time
 
 app = Flask(__name__)
-db.metadata.clear()
 
 class QuestionSchema(ma.ModelSchema):
     class Meta:
