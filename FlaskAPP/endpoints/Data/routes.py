@@ -52,7 +52,10 @@ def upload_patient_test_data():
     testEndTime = testData["testEndTime"]
     testName = testData["testName"]
 
-    if(testName == "alphabet_test"):
+    if testName is None:
+        testName = "AlphabetTest.json"
+
+    if(testName == "AlphabetTest"):
         testName = "AlphabetTest.json"
 
     # Get the difference in time from start to end, then convert to seconds
@@ -158,15 +161,9 @@ def download(filename):
     file_data = JSONFiles.query.filter_by(name=filename).first()
     jsonfile = file_data.data
 
-    string = jsonfile.decode("utf8").replace("'", '"')
+    file = jsonfile.decode("utf8")
 
-    response = app.response_class(
-        response=str(string),
-        status=200,
-        mimetype='application/json'
-    )
-
-    return response
+    return file
 
 @data.route('/data/download/getTestList')
 def getList():
