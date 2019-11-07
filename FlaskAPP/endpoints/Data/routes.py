@@ -17,6 +17,7 @@ import flask_marshmallow
 import xlsxwriter
 import datetime, time
 
+app = Flask(__name__)
 
 class QuestionSchema(ma.ModelSchema):
     class Meta:
@@ -51,7 +52,10 @@ def upload_patient_test_data():
     testEndTime = testData["testEndTime"]
     testName = testData["testName"]
 
-    if(testName == "alphabet_test"):
+    if testName is None:
+        testName = "AlphabetTest.json"
+
+    if(testName == "AlphabetTest"):
         testName = "AlphabetTest.json"
 
     # Get the difference in time from start to end, then convert to seconds
@@ -144,11 +148,22 @@ def upload_patient_questionnaire_answers():
     return "Answers"
 
 
-@data.route('/data/download/<filename>')
-def download_test(filename):
-    file_data = JSONFiles.query.filter_by(name=filename).first()
-    return send_file(BytesIO(file_data.data), attachment_filename=filename, as_attachment=True)
+# @data.route('/data/download/<filename>')
+# def download_test(filename):
+#     file_data = JSONFiles.query.filter_by(name=filename).first()
+#     file_schema = JSONFileSchema()
+#     output = file_schema.dump(file_data)
+    
+#     return jsonify(output)
 
+@data.route('/data/download/<filename>')
+def download(filename):
+    file_data = JSONFiles.query.filter_by(name=filename).first()
+    jsonfile = file_data.data
+
+    file = jsonfile.decode("utf8")
+
+    return file
 
 @data.route('/data/download/getTestList')
 def getList():
