@@ -12,6 +12,7 @@ from FlaskAPP.models.circles import Circles
 from FlaskAPP.models.answers import Answers
 from FlaskAPP.models.pressure import Pressure
 from FlaskAPP.models.testframe import TestFrame
+from FlaskAPP.models.doctor import Doctor
 from random import randint
 import flask_marshmallow
 import xlsxwriter
@@ -28,13 +29,17 @@ class JSONFileSchema(ma.ModelSchema):
     class Meta:
         model = JSONFiles
 
+class DoctorFileSchema(ma.ModelSchema):
+    class Meta:
+        model = Doctor
+
 
 data = Blueprint('data', __name__)
 
 
 # Divdies to get milliseconds, then subtracts from the start time to get interval
 def convert(nano, testStartTime):
-    return (((nano / 100000) - (testStartTime / 100000)))
+    return (((nano / 10000000) - (testStartTime / 10000000)))
 
 
 @data.route("/data/upload_patient_test_data", methods=['POST'])
@@ -121,6 +126,10 @@ def upload_patient_test_data():
 
     return "Nice!"
 
+@data.route("/data/testConnection")
+def testConnection():
+    return "Good job!"
+
 
 @data.route("/data/upload_patient_questionnaire_answers", methods=['POST'])
 def upload_patient_questionnaire_answers():
@@ -147,15 +156,6 @@ def upload_patient_questionnaire_answers():
 
     return "Answers"
 
-
-# @data.route('/data/download/<filename>')
-# def download_test(filename):
-#     file_data = JSONFiles.query.filter_by(name=filename).first()
-#     file_schema = JSONFileSchema()
-#     output = file_schema.dump(file_data)
-    
-#     return jsonify(output)
-
 @data.route('/data/download/<filename>')
 def download(filename):
     file_data = JSONFiles.query.filter_by(name=filename).first()
@@ -168,12 +168,18 @@ def download(filename):
 @data.route('/data/download/getTestList')
 def getList():
     fileList = JSONFiles.query.all()
-    file_schema = JSONFileSchema(many=True)
+    file_schema = JSONFileSchema(many=True, only=['name'])
     output = file_schema.dump(fileList)
     
     return jsonify(output)
 # make sure to perform error checking - this endpoint is open to anyone
 
+@data.route('/data/download/getDoctorList')
+def getDoctorList():
+    doctorList = Doctor.query.all()
+    doctor_schema = DoctorFileSchema(many=True, only=['DoctorID', 'DoctorName'])
+    output = doctor_schema.dump(doctorList)
+    return jsonify(output)
 
 @data.route("/data/download_questions", methods=['POST', 'GET'])
 def download_questions():
@@ -182,14 +188,6 @@ def download_questions():
     question_schema = QuestionSchema(many=True)
     output = question_schema.dump(questions)
     return jsonify(output)
-   
-#    ''' return jsonify(Question=questions[0].Question, 
-#     QuestionType=questions[0].QuestionType, 
-#     PossibleAnswers=questions[0].PossibleAnswers, 
-#     QuestionID=questions[0].QuestionID)
-#     #add code that will grab the data stored in the database and push it to the app
-#     '''
-
 
 #  ENDPOINT
 #  returns corresponding .xlsx file based on get request header
