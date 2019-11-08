@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, request
+from flask import Blueprint, render_template, redirect, url_for, request, flash
 from flask_login import login_user, logout_user, login_required, current_user
 
 from FlaskAPP.models.users import Doctor
@@ -26,6 +26,7 @@ def login_view():
             login_user(result)
             return render_template('index.html', user=result)
         else:
+            flash('Email or Password is incorrect', 'danger')
             return render_template('Login/login.html', form=form)
 
 
