@@ -8,20 +8,22 @@
 
 <link rel="stylesheet" href="{{ url_for('static', filename='styles/login.css') }}">
 
-<form>
+<form method="post" role="form" action="{{ url_for('login.reset_pw', token=token) }}">
+	<!--Enables login form-->
+      {{ form.csrf_token }}
 	<div class="text-center">
 	  <h2>Password Reset</h2>
 	  <hr>
 	</div>
 	<div class="form-group">
-	  <label for="passwordInput1">New Password</label>
-	  <input type="password" class="form-control" id="passwordInput1" placeholder="Enter new password">
+	 	{{ form.password_first.label }}
+	 	{{ form.password_first(class_="form-control") }}
 	</div>
 	<div class="form-group">
-	  <label for="passwordInput2">Confirm Password</label>
-	  <input type="passwordConfirm" class="form-control" id="passwordInput2" placeholder="Retype new password">
+		{{ form.password_confirm.label }}
+		{{ form.password_confirm(class_="form-control") }}
 	</div>
-	<button type="submit" class="btn btn-primary">Submit</button>
+	{{ form.submit(class_="btn btn-primary") }}
   </form>
 
   
